@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+    <style>
+      body {
+        overflow-x: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .nav-bar {
+        position: fixed;
+        width: 100%;
+        height: 8%;
+        top: 0;
+        background: url("img/navBar.png");
+        background-size: cover;
+        z-index: 6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-bar"></div>
+    <div
+      class="container"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(0, 0, 0);
+        background: url('space2.png');
+        background-size: cover;
+        z-index: 1;
+      "
+    >
+      <canvas
+        id="renderCanvasWelcome"
+        style="
+          width: 40%;
+          height: 100%;
+          margin-left: 10%;
+          float: left;
+          touch-action: none;
+          -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
+          -webkit-focus-ring-color: rgba(255, 255, 255, 0) !important;
+          outline: none !important;
+        "
+      ></canvas>
+      <canvas
+        id="renderCanvasLogo"
+        style="
+          width: 60%;
+          margin-left: -10%;
+          height: 100%;
+          float: left;
+          touch-action: none;
+          -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
+          -webkit-focus-ring-color: rgba(255, 255, 255, 0) !important;
+          outline: none !important;
+        "
+      >
+      </canvas>
+    </div>
+    <div
+      id="landingPageContainer"
+      style="
+        width: 100vw;
+        height: 100vh;
+        /* margin-top: -100vh; */
+        position: fixed;
+        background-color: rgb(7, 7, 7);
+        opacity: 0;
+        z-index: 2;
+      "
+    ></div>
+    <div
+      style="
+        width: 100vw;
+        height: 500vh;
+        /* margin-top: -100vh; */
+        position: relative;
+        z-index: 5;
+      "
+    >
+      <div
+        style="
+          width: 100%;
+          height: 100vh;
+          position: relative;
+
+          text-align: center;
+        "
+      ></div>
+      <div
+        style="
+          width: 100%;
+          height: 100vh;
+          position: relative;
+          opacity: 1;
+          text-align: center;
+        "
+      >
+        <h2 style="color: white">WE ARE</h2>
+        <h1 style="color: white">3D ANIMATION & 3D GRAPHICS DESIGN AGENCY</h1>
+        <h2 style="color: white">
+          PROFESSIONAL ANIMATION VIDEOS DESIGN FOR YOUR BUSINESS!
+        </h2>
+      </div>
+    </div>
+    <script>
+      var landingPageContainer = document.getElementById(
+        "landingPageContainer"
+      );
+      var scrollOpacity = 0;
+      window.addEventListener("scroll", function () {
+        console.log(window.pageYOffset);
+        if (window.pageYOffset < 360) {
+          landingPageContainer.style.opacity = scrollOpacity;
+          scrollOpacity = window.pageYOffset / 500;
+          console.log(scrollOpacity);
+        }
+      });
+      var canvas = document.getElementById("renderCanvasLogo");
+
+      var engine = null;
+      var scene = null;
+      var sceneToRender = null;
+      var createDefaultEngine = function () {
+        return new BABYLON.Engine(canvas, true, {
+          preserveDrawingBuffer: true,
+          stencil: true,
+          disableWebGL2Support: false,
+        });
+      };
+      var createScene = function () {
+        var scene = new BABYLON.Scene(engine);
+
+        scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+        // scene.clearColor = new BABYLON.Color3.FromHexString("#ffffff");
+
+        var light = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(0, 1, -1),
+          scene
+        );
+        light.intensity = 1;
+        var light2 = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(0, 1, 1),
+          scene
+        );
+        light2.intensity = 1;
+        var light3 = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(0, -1, -1),
+          scene
+        );
+        light3.intensity = 1;
+        var light4 = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(0, -1, 1),
+          scene
+        );
+        light4.intensity = 1;
+
+        var camera = new BABYLON.ArcRotateCamera(
+          "Camera",
+          0,
+          0,
+          0,
+          new BABYLON.Vector3(0, 0, 0),
+          scene
+        );
+        camera.attachControl(canvas, true);
+        // camera.setPosition(new BABYLON.Vector3(3.7, 2.72, -4));
+        camera.setPosition(new BABYLON.Vector3(3.7, 2.72, -4));
+        camera.lowerRadiusLimit = 5;
+        camera.upperRadiusLimit = 5;
+
+        var mat = new BABYLON.StandardMaterial("mat", scene);
+        var texture = new BABYLON.Texture("textures/logoTexture.png", scene);
+        mat.diffuseTexture = texture;
+
+        var columns = 6; // 6 columns
+        var rows = 1; // 1 row
+
+        //alien sprite
+        var faceUV = new Array(6);
+
+        //set all faces to same
+        for (var i = 0; i < 6; i++) {
+          faceUV[i] = new BABYLON.Vector4(
+            i / columns,
+            0,
+            (i + 1) / columns,
+            1 / rows
+          );
+        }
+        //wrap set
+        var options = {
+          faceUV: faceUV,
+          wrap: true,
+          size: 0.8,
+        };
+
+        var box = BABYLON.MeshBuilder.CreateBox("box", options, scene);
+        box.material = mat;
+
+        scene.beforeRender = function () {
+          // console.log(camera.position);
+        };
+
+        var pipe = BABYLON.MeshBuilder.CreateCylinder("pipe", {
+          height: 0.4,
+          diameter: 0.07,
+        });
+        pipe.position = new BABYLON.Vector3(0, 0.68, 0);
+        var pipeMat = new BABYLON.StandardMaterial("pipeMat", scene);
+        pipeMat.diffuseColor = new BABYLON.Color3.FromHexString("#000000");
+        pipe.material = pipeMat;
+
+        var pipeDot = pipe.clone("pipeDot");
+        pipeDot.scaling = new BABYLON.Vector3(1, 0.1, 1);
+        pipeDot.position = new BABYLON.Vector3(0, 0.4, 0);
+
+        var pipe2 = pipe.clone("pipe2");
+        pipe2.position = new BABYLON.Vector3(0.68, -0.15, 0);
+        pipe2.addRotation(0, 0, 1.55);
+
+        var pipeDot2 = pipeDot.clone("pipeDot2");
+        pipeDot2.position = new BABYLON.Vector3(0.4, -0.15, 0);
+        pipeDot2.addRotation(0, 0, 1.55);
+
+        var pipe3 = pipe.clone("pipe3");
+        pipe3.position = new BABYLON.Vector3(0, -0.15, -0.68);
+        pipe3.addRotation(0, 1.55, 1.55);
+
+        var pipeDot3 = pipeDot.clone("pipeDot3");
+        pipeDot3.position = new BABYLON.Vector3(0, -0.15, -0.4);
+        pipeDot3.addRotation(0, 1.55, 1.55);
+
+        BABYLON.ParticleHelper.CreateFromSnippetAsync(
+          "2JRD1A#2",
+          scene,
+          false
+        ).then((system) => {
+          system.removeColorGradient(
+            0.46,
+            new BABYLON.Color3(42 / 255, 227 / 255, 248 / 255),
+            new BABYLON.Color3(32 / 255, 143 / 255, 250 / 255)
+          );
+          system.removeColorGradient(
+            0.53,
+            new BABYLON.Color3(42 / 255, 227 / 255, 248 / 255),
+            new BABYLON.Color3(32 / 255, 143 / 255, 250 / 255)
+          );
+          system.removeColorGradient(
+            0,
+            new BABYLON.Color3(0, 0, 0),
+            new BABYLON.Color3(0, 0, 0)
+          );
+          system.removeColorGradient(
+            1,
+            new BABYLON.Color3(0, 0, 0),
+            new BABYLON.Color3(0, 0, 0)
+          );
+          system.addColorGradient(0.0, new BABYLON.Color4(1, 1, 0, 0));
+          system.addColorGradient(
+            0.53,
+            new BABYLON.Color4(1, 1, 0.57),
+            new BABYLON.Color4(0.99, 0.99, 0.68)
+          );
+          system.addColorGradient(
+            0.46,
+            new BABYLON.Color4(0.99, 0.99, 0),
+            new BABYLON.Color4(0.99, 0.99, 0)
+          );
+          system.addColorGradient(1.0, new BABYLON.Color4(1, 1, 0, 0));
+        });
+        BABYLON.ParticleHelper.CreateFromSnippetAsync(
+          "EXUQ7M#5",
+          scene,
+          false
+        ).then((system) => {
+          system.color1 = new BABYLON.Color4(1, 1, 0, 1);
+          system.color2 = new BABYLON.Color4(1, 1, 0, 1);
+          system.colorDead = new BABYLON.Color4(1, 1, 0, 0);
+        });
+        var sphereSpark = BABYLON.MeshBuilder.CreateSphere(
+          "sphereSpark",
+          { diameter: 0, segments: 32 },
+          scene
+        );
+        sphereSpark.isVisible = false;
+        BABYLON.ParticleHelper.CreateFromSnippetAsync(
+          "UY098C#3",
+          scene,
+          false
+        ).then((system) => {
+          system.emitter = sphereSpark;
+          system.removeColorGradient(
+            0.19,
+            new BABYLON.Color3(42 / 255, 227 / 255, 248 / 255),
+            new BABYLON.Color3(32 / 255, 143 / 255, 250 / 255)
+          );
+          system.removeColorGradient(
+            0,
+            new BABYLON.Color3(0, 0, 0),
+            new BABYLON.Color3(0, 0, 0)
+          );
+          system.removeColorGradient(
+            1,
+            new BABYLON.Color3(0, 0, 0),
+            new BABYLON.Color3(0, 0, 0)
+          );
+          system.addColorGradient(0.0, new BABYLON.Color4(1, 1, 0, 0));
+
+          system.addColorGradient(
+            0.46,
+            new BABYLON.Color4(1, 1, 0.47),
+            new BABYLON.Color4(0.99, 0.99, 0)
+          );
+          system.addColorGradient(1.0, new BABYLON.Color4(1, 1, 0, 0));
+        });
+        var sphereSmoke = BABYLON.MeshBuilder.CreateSphere(
+          "sphereSmoke",
+          { diameter: 0, segments: 32 },
+          scene
+        );
+        sphereSmoke.isVisible = false;
+        BABYLON.ParticleHelper.CreateFromSnippetAsync(
+          "UY098C#6",
+          scene,
+          false
+        ).then((system) => {
+          system.emitter = sphereSmoke;
+          system.removeColorGradient(
+            0,
+            new BABYLON.Color3(0, 0, 0),
+            new BABYLON.Color3(0, 0, 0)
+          );
+          system.removeColorGradient(
+            1,
+            new BABYLON.Color3(0, 0, 0),
+            new BABYLON.Color3(0, 0, 0)
+          );
+          system.addColorGradient(
+            0.0,
+            new BABYLON.Color4(0.99, 0.99, 0.25, 0.1),
+            new BABYLON.Color4(1, 1, 0, 0.1)
+          );
+
+          system.addColorGradient(
+            1.0,
+            new BABYLON.Color4(1, 1, 0, 0.1),
+            new BABYLON.Color4(0.99, 0.99, 0.25, 0.1)
+          );
+        });
+
+        // var logo = BABYLON.MeshBuilder.CreatePlane("logo", {
+        //   height: 0.8,
+        //   width: 2.22,
+        // });
+        // logo.position = new BABYLON.Vector3(1.8, 0.7, 0);
+        // logo.addRotation(1, 0, 0.4);
+        // var logomat = new BABYLON.StandardMaterial("logomat", scene);
+        // var logotex = new BABYLON.Texture("textures/logo.png", scene);
+        // logotex.hasAlpha = true;
+        // logomat.diffuseTexture = logotex;
+        // logomat.useAlphaFromDiffuseTexture = true;
+        // logomat.backFaceCulling = false;
+        // logo.material = logomat;
+
+        return scene;
+      };
+      window.initFunction = async function () {
+        var asyncEngineCreation = async function () {
+          try {
+            return createDefaultEngine();
+          } catch (e) {
+            console.log(
+              "the available createEngine function failed. Creating the default engine instead"
+            );
+            return createDefaultEngine();
+          }
+        };
+
+        window.engine = await asyncEngineCreation();
+        if (!engine) throw "engine should not be null.";
+        window.scene = createScene();
+      };
+      initFunction().then(() => {
+        sceneToRender = scene;
+        engine.runRenderLoop(function () {
+          if (sceneToRender && sceneToRender.activeCamera) {
+            sceneToRender.render();
+          }
+        });
+      });
+
+      // Resize
+      window.addEventListener("resize", function () {
+        engine.resize();
+      });
+    </script>
+
+    <script>
+      var canvas2 = document.getElementById("renderCanvasWelcome");
+
+      var engine2 = null;
+      var scene2 = null;
+      var sceneToRender2 = null;
+      var createDefaultEngine2 = function () {
+        return new BABYLON.Engine(canvas2, true, {
+          preserveDrawingBuffer: true,
+          stencil: true,
+          disableWebGL2Support: false,
+        });
+      };
+      var createScene2 = function () {
+        var scene2 = new BABYLON.Scene(engine2);
+
+        scene2.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+        // scene2.clearColor = new BABYLON.Color3.FromHexString("#ff0000");
+
+        var lightA = new BABYLON.HemisphericLight(
+          "lightA",
+          new BABYLON.Vector3(0, 1, -1),
+          scene2
+        );
+        lightA.intensity = 1;
+        var light2A = new BABYLON.HemisphericLight(
+          "lightA",
+          new BABYLON.Vector3(0, 1, 1),
+          scene2
+        );
+        light2A.intensity = 1;
+        var light3A = new BABYLON.HemisphericLight(
+          "lightA",
+          new BABYLON.Vector3(0, -1, -1),
+          scene2
+        );
+        light3A.intensity = 1;
+        var light4A = new BABYLON.HemisphericLight(
+          "lightA",
+          new BABYLON.Vector3(0, -1, 1),
+          scene2
+        );
+        light4A.intensity = 1;
+
+        var camera2 = new BABYLON.ArcRotateCamera(
+          "Camera2",
+          0,
+          0,
+          0,
+          new BABYLON.Vector3(0, 0, 0),
+          scene2
+        );
+        camera2.attachControl(canvas2, true);
+        camera2.setPosition(new BABYLON.Vector3(0, 0, -3));
+        camera2.lowerRadiusLimit = 4;
+        camera2.upperRadiusLimit = 4;
+
+        //highlight thinghs
+        var hl = new BABYLON.HighlightLayer("hl1", scene);
+        hl.blurHorizontalSize = 1;
+        hl.blurVerticalSize = 1;
+
+        function animRotY() {
+          const anim = new BABYLON.Animation(
+            "animRotY",
+            "rotation.y",
+            30,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE
+          );
+          anim.setKeys([
+            { frame: 0, value: 0 },
+            { frame: 10, value: 0.2 * Math.PI },
+            { frame: 20, value: -0.2 * Math.PI },
+            { frame: 30, value: 0 },
+          ]);
+          return anim;
+        }
+        const animationsWelcome = [
+          animRotY(),
+          // animPosY()
+        ];
+        var welcomeSign = BABYLON.MeshBuilder.CreatePlane("welcomeSign", {
+          height: 0.5,
+          width: 1.365,
+        });
+        welcomeSign.position = new BABYLON.Vector3(0, -0.3, 0);
+        var welcomeSignmat = new BABYLON.StandardMaterial(
+          "welcomeSignmat",
+          scene2
+        );
+        var welcomeSigntex = new BABYLON.Texture(
+          "textures/welcome4.png",
+          scene2
+        );
+        welcomeSigntex.hasAlpha = true;
+        welcomeSignmat.diffuseTexture = welcomeSigntex;
+        welcomeSignmat.useAlphaFromDiffuseTexture = true;
+        welcomeSignmat.backFaceCulling = false;
+        welcomeSign.material = welcomeSignmat;
+
+        scene2.beginDirectAnimation(
+          welcomeSign,
+          animationsWelcome,
+          0,
+          30,
+          true,
+          0.3
+        );
+
+        return scene2;
+      };
+      window.initFunction = async function () {
+        var asyncEngineCreation2 = async function () {
+          try {
+            return createDefaultEngine2();
+          } catch (e) {
+            console.log(
+              "the available createEngine function failed. Creating the default engine instead"
+            );
+            return createDefaultEngine2();
+          }
+        };
+
+        window.engine2 = await asyncEngineCreation2();
+        if (!engine2) throw "engine should not be null.";
+        window.scene2 = createScene2();
+      };
+      initFunction().then(() => {
+        sceneToRender2 = scene2;
+        engine2.runRenderLoop(function () {
+          if (sceneToRender2 && sceneToRender2.activeCamera) {
+            sceneToRender2.render();
+          }
+        });
+      });
+
+      // Resize
+      window.addEventListener("resize", function () {
+        engine2.resize();
+      });
+    </script>
+  </body>
+</html>
