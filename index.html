@@ -5,6 +5,13 @@
 
     <title>Babylon.js sample code</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Babylon.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
     <script src="https://preview.babylonjs.com/ammo.js"></script>
@@ -28,6 +35,16 @@
         margin: 0;
         padding: 0;
       }
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Hide scrollbar for IE, Edge and Firefox */
+      body {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+      }
       .nav-bar {
         position: fixed;
         width: 100%;
@@ -50,8 +67,8 @@
         width: 100vw;
         height: 100vh;
         background-color: rgb(0, 0, 0);
-        background: url('space2.png');
-        background-size: cover;
+        /* background: url('space2.png');
+        background-size: cover; */
         z-index: 1;
       "
     >
@@ -60,7 +77,7 @@
         style="
           width: 40%;
           height: 100%;
-          margin-left: 10%;
+          margin-left: 5%;
           float: left;
           touch-action: none;
           -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
@@ -72,13 +89,14 @@
         id="renderCanvasLogo"
         style="
           width: 60%;
-          margin-left: -10%;
+          margin-left: -5%;
           height: 100%;
           float: left;
           touch-action: none;
           -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
           -webkit-focus-ring-color: rgba(255, 255, 255, 0) !important;
           outline: none !important;
+          opacity: 1;
         "
       >
       </canvas>
@@ -98,7 +116,7 @@
     <div
       style="
         width: 100vw;
-        height: 500vh;
+        height: 1000vh;
         /* margin-top: -100vh; */
         position: relative;
         z-index: 5;
@@ -109,41 +127,90 @@
           width: 100%;
           height: 100vh;
           position: relative;
-
+          /* background-color: tomato; */
           text-align: center;
         "
       ></div>
       <div
         style="
-          width: 100%;
-          height: 100vh;
+          width: 1040px;
+          margin: 0 auto;
           position: relative;
           opacity: 1;
           text-align: center;
         "
       >
-        <h2 style="color: white">WE ARE</h2>
-        <h1 style="color: white">3D ANIMATION & 3D GRAPHICS DESIGN AGENCY</h1>
-        <h2 style="color: white">
+        <h2 style="color: white; font: 900 24px 'Nunito Sans', sans-serif">
+          WE ARE
+        </h2>
+        <h1 style="color: white; font: 900 39px 'Nunito Sans', sans-serif">
+          3D ANIMATION & 3D GRAPHICS <br />DESIGN AGENCY
+        </h1>
+        <h2 style="color: white; font: 100 24px 'Nunito Sans', sans-serif">
           PROFESSIONAL ANIMATION VIDEOS DESIGN FOR YOUR BUSINESS!
         </h2>
       </div>
+      <div
+        style="
+          width: 1040px;
+          margin: 0 auto;
+          height: 50px;
+          position: relative;
+          /* background-color: tomato; */
+          text-align: center;
+        "
+      ></div>
+      <div
+        style="width: 1040px; margin: 0 auto; position: relative; opacity: 1"
+      >
+        <h2 style="color: white; font: 900 24px 'Nunito Sans', sans-serif">
+          We Design 3D Animated Videos & Motion Graphics
+        </h2>
+        <p style="color: white; font: 100 18px 'Nunito Sans', sans-serif">
+          Quince Creative (previously Quince Media) is a full service
+          <b>3d animation video & 3d graphics design agency.</b> From logo
+          animation videos and product animated videos to the photorealistic
+          architectural 3d visualizations and architectural camera fly by
+          renderings.
+        </p>
+      </div>
+      <div
+        style="width: 1040px; margin: 0 auto; position: relative; opacity: 1"
+      >
+        <h2 style="color: white; font: 900 24px 'Nunito Sans', sans-serif">
+          Next Level Animated Video Production Services
+        </h2>
+        <p style="color: white; font: 100 18px 'Nunito Sans', sans-serif">
+          Would you like to spice up your video projects with next level <b></b>3d
+          motion graphics</b>? We can help! Would you like to spice up your video
+          projects with next level <b>3d motion graphics</b>? We can help!
+        </p>
+      </div>
     </div>
+
     <script>
       var landingPageContainer = document.getElementById(
         "landingPageContainer"
       );
+      var renderCanvasWelcomeScroll = document.getElementById(
+        "renderCanvasWelcome"
+      );
+      var renderCanvasLogoScroll = document.getElementById("renderCanvasLogo");
       var scrollOpacity = 0;
       window.addEventListener("scroll", function () {
-        console.log(window.pageYOffset);
+        // console.log(window.pageYOffset);
         if (window.pageYOffset < 360) {
           landingPageContainer.style.opacity = scrollOpacity;
           scrollOpacity = window.pageYOffset / 500;
-          console.log(scrollOpacity);
+          // renderCanvasWelcomeScroll.style.opacity = window.pageYOffset / 1000;
         }
       });
+
       var canvas = document.getElementById("renderCanvasLogo");
 
+      
+      // renderCanvasWelcomeScroll.style.width = "0vw";
+      // canvas.style.width = "100vw";
       var engine = null;
       var scene = null;
       var sceneToRender = null;
@@ -157,7 +224,6 @@
       var createScene = function () {
         var scene = new BABYLON.Scene(engine);
 
-        scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
         // scene.clearColor = new BABYLON.Color3.FromHexString("#ffffff");
 
         var light = new BABYLON.HemisphericLight(
@@ -196,8 +262,13 @@
         camera.attachControl(canvas, true);
         // camera.setPosition(new BABYLON.Vector3(3.7, 2.72, -4));
         camera.setPosition(new BABYLON.Vector3(3.7, 2.72, -4));
-        camera.lowerRadiusLimit = 5;
-        camera.upperRadiusLimit = 5;
+        // camera.lowerRadiusLimit = 6;
+        // camera.upperRadiusLimit = 6;
+        scene.clearColor = new BABYLON.Color3(0, 0, 0);
+
+        // scene.onBeforeCameraRenderObservable.add(() => {
+        //   scene.activeCamera.alpha += 0.002 * scene.getAnimationRatio();
+        // });
 
         var mat = new BABYLON.StandardMaterial("mat", scene);
         var texture = new BABYLON.Texture("textures/logoTexture.png", scene);
@@ -260,6 +331,59 @@
         var pipeDot3 = pipeDot.clone("pipeDot3");
         pipeDot3.position = new BABYLON.Vector3(0, -0.15, -0.4);
         pipeDot3.addRotation(0, 1.55, 1.55);
+
+        var logoMesh = BABYLON.Mesh.MergeMeshes(
+          [box, pipe, pipeDot, pipe2, pipeDot2, pipe3, pipeDot3],
+          true,
+          true,
+          undefined,
+          false,
+          true
+        );
+        camera.target = logoMesh;
+        
+
+
+          const anim = new BABYLON.Animation(
+            "movecam",
+            "position",
+            500,
+            BABYLON.Animation.ANIMATIONTYPE_VECTOR3
+          );
+          anim.setKeys([
+            { frame: 0, value: new BABYLON.Vector3(3.7, 2.72, -4) },
+            { frame: 100, value: new BABYLON.Vector3(-0.001, 5.28, -2.35) },
+            { frame: 200, value: new BABYLON.Vector3(3, 3, -3) },
+            { frame: 300, value: new BABYLON.Vector3(3.7, 2.72, -4) },
+            { frame: 400, value: new BABYLON.Vector3(3, 3, -3) },
+            { frame: 500, value: new BABYLON.Vector3(3.7, 2.72, -4) },
+          ]);
+          var animGroup =  new BABYLON.AnimationGroup('animGroup', scene);
+    animGroup.addTargetedAnimation(anim, camera);
+    // animGroup.addTargetedAnimation(anim2, camera);
+    animGroup.play();
+    animGroup.pause();
+        const checkpoint = 1000;
+        console.log(document.body.clientHeight)
+        console.log(window.pageYOffset)
+    window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
+        console.log(currentScroll / 10);
+          console.log(currentScroll);
+        if (currentScroll <= checkpoint) {
+          
+          opacity = 1 - currentScroll / checkpoint;
+          canvas.style.marginLeft =
+            -((currentScroll / checkpoint) * 45 + 5) + "%";
+            
+            
+        } else {
+          opacity = 0;
+        }
+        animGroup.pause();
+            animGroup.goToFrame(currentScroll/10);
+        renderCanvasWelcomeScroll.style.opacity = opacity;
+      });
 
         BABYLON.ParticleHelper.CreateFromSnippetAsync(
           "2JRD1A#2",
